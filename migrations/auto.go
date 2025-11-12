@@ -1,7 +1,7 @@
 package main
 
 import (
-	"db-less-store/internal/models"
+	"db-less-store/internal/product"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -17,7 +17,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = db.AutoMigrate(&models.Product{})
+	err = db.AutoMigrate(&product.Product{})
 	if err != nil {
 		panic(err)
 	}

@@ -1,4 +1,4 @@
-package models
+package product
 
 import (
 	"github.com/lib/pq"
@@ -9,6 +9,6 @@ type Product struct {
 	gorm.Model
 	Name        string         `json:"name"`
 	Description string         `json:"description"`
-	Images      pq.StringArray `json:"images"`
-	Price       int            `json:"price"`
+	Images      pq.StringArray `json:"images" gorm:"type:text[]"`
+	Price       float32        `json:"price"`
 }

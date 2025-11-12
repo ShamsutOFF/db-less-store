@@ -17,3 +17,11 @@ func NewDb(config *configs.Config) *Db {
 	}
 	return &Db{db}
 }
+
+func (d *Db) Close() error {
+	sqlDB, err := d.DB.DB()
+	if err != nil {
+		return err
+	}
+	return sqlDB.Close()
+}

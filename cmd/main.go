@@ -2,8 +2,10 @@ package main
 
 import (
 	"db-less-store/configs"
+	"db-less-store/internal/auth"
 	"db-less-store/internal/product"
 	"db-less-store/pkg/db"
+	"db-less-store/pkg/jwt"
 	"db-less-store/pkg/middleware"
 	"fmt"
 	"github.com/sirupsen/logrus"
@@ -27,9 +29,23 @@ func main() {
 	// Repositories
 	productRepo := product.NewProductRepository(newDb)
 
+	// Auth dependencies
+	authRepo := auth.NewAuthRepository(newDb)
+	smsService := auth.NewSMSService()
+	codeGenerator := auth.NewCodeGenerator()
+	jwtService := jwt.NewJWT(conf.Auth.Secret)
+	middleware.SetJWTService(jwtService)
+
 	// Handlers
 	product.NewProductHandler(router, product.HandlerProductDeps{
 		ProductRepository: productRepo,
+	})
+
+	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
+		AuthRepository: authRepo,
+		SMSService:     smsService,
+		CodeGenerator:  codeGenerator,
+		JWTService:     jwtService,
 	})
 
 	// Middlewares

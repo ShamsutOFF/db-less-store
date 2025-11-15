@@ -1,6 +1,7 @@
 package product
 
 import (
+	"db-less-store/pkg/middleware"
 	"db-less-store/pkg/req"
 	"db-less-store/pkg/res"
 	"log"
@@ -19,11 +20,11 @@ func NewProductHandler(router *http.ServeMux, deps HandlerProductDeps) {
 	handler := &HandlerProduct{
 		ProductRepository: deps.ProductRepository,
 	}
-	router.HandleFunc("POST /products", handler.CreateProduct())
-	router.HandleFunc("GET /products", handler.GetProducts())
-	router.HandleFunc("GET /products/{id}", handler.GetProduct())
-	router.HandleFunc("PATCH /products/{id}", handler.UpdateProduct())
-	router.HandleFunc("DELETE /products/{id}", handler.DeleteProduct())
+	router.Handle("POST /products", middleware.IsAuthenticated(handler.CreateProduct()))
+	router.Handle("GET /products", middleware.IsAuthenticated(handler.GetProducts()))
+	router.Handle("GET /products/{id}", middleware.IsAuthenticated(handler.GetProduct()))
+	router.Handle("PATCH /products/{id}", middleware.IsAuthenticated(handler.UpdateProduct()))
+	router.Handle("DELETE /products/{id}", middleware.IsAuthenticated(handler.DeleteProduct()))
 }
 
 func (h *HandlerProduct) CreateProduct() http.HandlerFunc {

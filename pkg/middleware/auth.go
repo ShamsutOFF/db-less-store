@@ -1,12 +1,17 @@
 package middleware
 
 import (
+	"context"
 	"db-less-store/pkg/jwt"
 	"db-less-store/pkg/res"
 	"log"
 	"net/http"
 	"strings"
 )
+
+type PhoneKey string
+
+const PhoneContextKey PhoneKey = "userPhone"
 
 var jwtService *jwt.JWT
 
@@ -60,10 +65,8 @@ func IsAuthenticated(next http.Handler) http.Handler {
 
 		log.Println("@@@ Authenticated user phone:", phone)
 
-		// Можно добавить телефон в контекст для использования в хендлерах
-		// ctx := context.WithValue(r.Context(), "userPhone", phone)
-		// next.ServeHTTP(w, r.WithContext(ctx))
-
-		next.ServeHTTP(w, r)
+		// добавил телефон в контекст для использования в хендлерах
+		ctx := context.WithValue(r.Context(), PhoneContextKey, phone)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

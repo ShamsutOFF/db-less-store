@@ -48,3 +48,12 @@ func (r *AuthRepository) CreateOrUpdateUser(phone string) (*User, error) {
 	err := r.Database.DB.Create(&user).Error
 	return &user, err
 }
+
+func (r *AuthRepository) FindUserByPhone(phone string) (*User, error) {
+	var user User
+	result := r.Database.DB.Where("phone = ?", phone).First(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
+}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"db-less-store/internal/auth"
+	"db-less-store/internal/order"
 	"db-less-store/internal/product"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -21,7 +22,10 @@ func main() {
 	err = db.AutoMigrate(
 		&product.Product{},
 		&auth.Session{},
-		&auth.User{})
+		&auth.User{},
+		&order.Order{},
+		&order.OrderItem{},
+	)
 
 	if err != nil {
 		panic(err)

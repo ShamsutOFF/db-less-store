@@ -3,6 +3,7 @@ package main
 import (
 	"db-less-store/configs"
 	"db-less-store/internal/auth"
+	"db-less-store/internal/order"
 	"db-less-store/internal/product"
 	"db-less-store/pkg/db"
 	"db-less-store/pkg/jwt"
@@ -28,6 +29,7 @@ func main() {
 
 	// Repositories
 	productRepo := product.NewProductRepository(newDb)
+	orderRepo := order.NewOrderRepository(newDb)
 
 	// Auth dependencies
 	authRepo := auth.NewAuthRepository(newDb)
@@ -46,6 +48,11 @@ func main() {
 		SMSService:     smsService,
 		CodeGenerator:  codeGenerator,
 		JWTService:     jwtService,
+	})
+	order.NewOrderHandler(router, order.OrderHandlerDeps{
+		OrderRepository:   orderRepo,
+		AuthRepository:    authRepo,
+		ProductRepository: productRepo,
 	})
 
 	// Middlewares

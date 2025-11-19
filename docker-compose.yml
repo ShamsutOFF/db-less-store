@@ -1,0 +1,22 @@
+services:
+  postgres:
+    container_name: postgres_go_links_shortener
+    image: postgres:18-alpine  # лучше указать конкретную версию
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: links_shortener  # добавить имя БД
+      PGDATA: /data/postgres
+    volumes:
+      - postgres_data:/data/postgres  # лучше использовать именованные volumes
+    ports:
+      - "5432:5432"
+    restart: unless-stopped  # добавить политику перезапуска
+    healthcheck:  # добавить healthcheck
+      test: ["CMD-SHELL", "pg_isready -U admin -d links_shortener"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:  # объявить именованный volume
